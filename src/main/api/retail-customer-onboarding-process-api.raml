@@ -1,0 +1,35 @@
+#%RAML 1.0
+title: retail-customer-onboarding-process-api
+version: v1
+protocols: HTTPS
+mediaType: application/json
+baseUri: https://localhost:8082/api
+
+types: 
+      
+  customer:
+    type: object
+    properties:
+      userId?: string
+      customerId?: string
+      firstName?: string
+      lastName: string
+      middleName?: string
+      phone?: string
+      email: string
+  
+/customers:
+  displayName: Customer contact
+  post:
+    description: Create customer contact  
+    body:
+      application/json:
+        type: customer
+        example: !include examples/post_customer.raml
+    responses:
+      201:
+        body:
+          example: |
+            {
+              "customerId": "sfdc|2131241412312312"
+            } 

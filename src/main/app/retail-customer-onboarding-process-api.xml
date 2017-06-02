@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    
+    <flow name="post:/customers:application/json:retail-customer-onboarding-process-api-config">
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+        <dw:transform-message doc:name="save input">
+            <dw:set-variable variableName="input"><![CDATA[%dw 1.0
+%output application/java
+---
+payload]]></dw:set-variable>
+        </dw:transform-message>
+        <async doc:name="Async">
+            <dw:transform-message doc:name="Prepare email">
+                <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	type: "EMAIL",
+	priority: "MINOR",
+	recipient: flowVars.input.email,
+	subject: "Welcome to Anypoint Store",
+	message: "Hello $(flowVars.input.firstName),
+
+Thank you for creating Anypoint Store account. 
+
+Thanks for creating an Anypoint Store account - you're on your way to building a retail application network!  
+Anypoint Store is part of MuleSoft's Catalyst Accelerator for Retail offering. 
+Learn how to deliver a consistent and compelling customer experience across multiple channels with a set of API designs and supporting reference implementations. 
+
+
+Learn more here: #[${catalyst.url}]
+
+Thanks,
+MuleSoft Team"
+	
+}]]></dw:set-payload>
+            </dw:transform-message>
+            <http:request config-ref="notifications-system-api" path="/notifications" method="POST" doc:name="Send e-mail">
+                <http:request-builder>
+                    <http:header headerName="Content-Type" value="application/json"/>
+                </http:request-builder>
+            </http:request>
+        </async>
+        <dw:transform-message doc:name="prepare payload for Customer System API">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	customerId: flowVars.input.userId,
+	email: flowVars.input.email,
+	firstName: flowVars.input.firstName,
+	lastName: flowVars.input.lastName,
+	(phone: flowVars.input.phone) when flowVars.input.phone != null
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger"/>
+        <http:request config-ref="retail-customer-system-api" path="/customers" method="POST" doc:name="POST Customer">
+            <http:request-builder>
+                <http:header headerName="Content-Type" value="application/json"/>
+            </http:request-builder>
+        </http:request>
+        <dw:transform-message doc:name="response">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	nativeId: payload.id
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    
+</mule>
