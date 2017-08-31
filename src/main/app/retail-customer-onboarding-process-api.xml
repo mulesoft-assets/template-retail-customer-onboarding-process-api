@@ -55,7 +55,7 @@ MuleSoft Team"
 	(phone: flowVars.input.phone) when flowVars.input.phone != null
 }]]></dw:set-payload>
         </dw:transform-message>
-        <logger message="#[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger"/>
+        <logger message="#[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Log input message"/>
         <http:request config-ref="retail-customer-system-api" path="/customers" method="POST" doc:name="POST Customer">
             <http:request-builder>
                 <http:header headerName="Content-Type" value="application/json"/>

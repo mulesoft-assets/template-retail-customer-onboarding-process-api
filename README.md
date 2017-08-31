@@ -1,4 +1,4 @@
-# Template Onboarding Process API
+# Template Customer Onboarding Process API
 
 + [License Agreement](#licenseagreement)
 + [Use Case](#usecase)
