@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:retail-notifications-system-api="http://www.mulesoft.org/schema/mule/retail-notifications-system-api"
-	xmlns:retail-salesforce-customer-system-api="http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api"
-	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:retail-notifications-system-api="http://www.mulesoft.org/schema/mule/retail-notifications-system-api"
+	xmlns:retail-salesforce-customer-system-api="http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api/current/mule-retail-salesforce-customer-system-api.xsd
-http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.mulesoft.org/schema/mule/retail-notifications-system-api/current/mule-retail-notifications-system-api.xsd">
+http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.mulesoft.org/schema/mule/retail-notifications-system-api/current/mule-retail-notifications-system-api.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
     <http:listener-config name="retail-onboarding-process-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="8081" protocol="HTTPS" tlsContext="TLS_Context"/>
     </http:listener-config>
     <apikit:config name="retail-onboarding-process-api-config" raml="retail-onboarding-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 	<configuration-properties doc:name="Configuration properties" doc:id="7305b8b1-e587-4752-acb3-1297d0d1587d" file="common.properties" />
@@ -18,6 +19,9 @@ http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.m
 	<configuration-properties doc:name="Configuration properties" doc:id="1b366b1d-0971-449e-9940-2c8aae6fb9cd" file="mule.${mule.env}.properties" />
 	<retail-salesforce-customer-system-api:config name="Retail_Salesforce_Customer_System_API_Config" doc:name="Retail Salesforce Customer System API Config" doc:id="28609e10-9c6f-414a-bef4-06618f870ba2" property_host="${customers-system-api.host}" property_port="${customers-system-api.port}" property_basePath="${customers-system-api.basePath}" property_protocol="${customers-system-api.protocol}" />
 	<retail-notifications-system-api:config name="Retail_Notifications_System_API_Config" doc:name="Retail Notifications System API Config" doc:id="82ebfcca-38b7-4341-a4f8-ec9d28af2095" property_basePath="${notifications-system-api.basePath}" property_protocol="${notifications-system-api.protocol}" property_host="${notifications-system-api.host}" property_port="${notifications-system-api.port}" />
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="204fa451-1537-47e7-a2a0-7156e934f2ae" >
+		<tls:key-store type="jks" path="${keystore.location}" alias="${key.alias}" keyPassword="${key.password}" password="${keystore.password}" />
+	</tls:context>
 
 
 </mule>
