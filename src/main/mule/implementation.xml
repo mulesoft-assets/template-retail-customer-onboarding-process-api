@@ -17,7 +17,7 @@ output application/java
 payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform doc:name="Prepare payload form Customer System API" doc:id="0605ef04-3d6e-4401-8605-0d63295e4916" >
+		<ee:transform doc:name="Prepare data for adding new customer" doc:id="0605ef04-3d6e-4401-8605-0d63295e4916" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -32,10 +32,9 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<retail-salesforce-customer-system-api:create-customer doc:name="Create customer" doc:id="639aab46-c63b-4b7a-8920-70e61ab53b0f" config-ref="Retail_Salesforce_Customer_System_API_Config"/>
-		<logger level="INFO" doc:name="Logger" doc:id="81c07668-a58e-4e9d-9405-08b93eba16be" message="returned POST payload=#[payload]"/>
+		<retail-salesforce-customer-system-api:create-customer doc:name="Create new customer via Customer System API" doc:id="639aab46-c63b-4b7a-8920-70e61ab53b0f" config-ref="Retail_Salesforce_Customer_System_API_Config"/>
 		<async doc:name="Async mail sending" doc:id="acfb0734-8cd3-4e30-bb7a-7bca663f1b4b">
-			<ee:transform doc:name="Prepare email" doc:id="e03fcf2b-45f5-4b65-81be-f2bc13877e62">
+			<ee:transform doc:name="Prepare email content" doc:id="e03fcf2b-45f5-4b65-81be-f2bc13877e62">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -59,11 +58,9 @@ MuleSoft Team"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<logger level="INFO" doc:name="Log before mail sending" doc:id="395aac0e-1eb7-4d32-a93f-f44600407f93" message="Mail Payload=#[payload]" />
-			<retail-notifications-system-api:create-notification doc:name="Send email via POST" doc:id="fc3cbaba-5485-481e-934a-760f046acde0" config-ref="Retail_Notifications_System_API_Config" />
-			<logger level="INFO" doc:name="email sent" doc:id="21c27092-fc3b-46a2-a7bf-034ccf699686" message="email sent, payload=#[payload]" />
+			<retail-notifications-system-api:create-notification doc:name="Send email via Notifications System API" doc:id="fc3cbaba-5485-481e-934a-760f046acde0" config-ref="Retail_Notifications_System_API_Config" />
 		</async>
-		<ee:transform doc:name="Transform Message" doc:id="8d30e4eb-cb13-44b6-ab18-15a5a2e583b2" >
+		<ee:transform doc:name="Data received from Customer System API to response" doc:id="8d30e4eb-cb13-44b6-ab18-15a5a2e583b2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
