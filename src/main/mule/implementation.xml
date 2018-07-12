@@ -51,7 +51,7 @@ Thanks for creating an Anypoint Store account - you're on your way to building a
 Anypoint Store is part of MuleSoft's Catalyst Accelerator for Retail offering. 
 Learn how to deliver a consistent and compelling customer experience across multiple channels with a set of API designs and supporting reference implementations. 
 
-
+Check out more details here:  " ++ p("catalyst.url") ++ "
 
 Thanks,
 MuleSoft Team"
