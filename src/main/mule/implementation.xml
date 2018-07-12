@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:retail-salesforce-customer-system-api="http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:retail-notifications-system-api="http://www.mulesoft.org/schema/mule/retail-notifications-system-api" xmlns:retail-salesforce-customer-system-api="http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api/current/mule-retail-salesforce-customer-system-api.xsd">
+http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api/current/mule-retail-salesforce-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.mulesoft.org/schema/mule/retail-notifications-system-api/current/mule-retail-notifications-system-api.xsd">
 	<flow name="postCustomersFlow" doc:id="2d6abf90-7ce9-435a-8dec-9c1447cddf1e" >
-		<logger level="INFO" doc:name="Logger" doc:id="4a42da3c-58c8-42b2-9d99-67e6a98c4d49" message="Message=#[message]"/>
-		<ee:transform doc:name="Transform Message" doc:id="111d2dc7-9543-4ef0-8ff0-6145bd0f87ba" >
+		<ee:transform doc:name="Store paylod to myInput variable" doc:id="111d2dc7-9543-4ef0-8ff0-6145bd0f87ba" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -17,18 +17,6 @@ output application/java
 payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<async doc:name="Async" doc:id="acfb0734-8cd3-4e30-bb7a-7bca663f1b4b" >
-			<ee:transform doc:name="Prepare email" doc:id="e03fcf2b-45f5-4b65-81be-f2bc13877e62" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-				</ee:message>
-			</ee:transform>
-			<logger level="INFO" doc:name="Send email" doc:id="21c27092-fc3b-46a2-a7bf-034ccf699686" message="email sent"/>
-		</async>
 		<ee:transform doc:name="Prepare payload form Customer System API" doc:id="0605ef04-3d6e-4401-8605-0d63295e4916" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -44,8 +32,46 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Log input message" doc:id="20759c2a-2487-440a-bad5-9dd267c862b5" message="Payload for POST=#[payload]"/>
 		<retail-salesforce-customer-system-api:create-customer doc:name="Create customer" doc:id="639aab46-c63b-4b7a-8920-70e61ab53b0f" config-ref="Retail_Salesforce_Customer_System_API_Config"/>
 		<logger level="INFO" doc:name="Logger" doc:id="81c07668-a58e-4e9d-9405-08b93eba16be" message="returned POST payload=#[payload]"/>
+		<async doc:name="Async mail sending" doc:id="acfb0734-8cd3-4e30-bb7a-7bca663f1b4b">
+			<ee:transform doc:name="Prepare email" doc:id="e03fcf2b-45f5-4b65-81be-f2bc13877e62">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"type": "EMAIL",
+	priority: "MINOR",
+	recipient: vars.myInput.email,
+	subject: "Welcome to Anypoint Store",
+	message: "Hello $(vars.myInput.firstName),
+
+Thanks for creating an Anypoint Store account - you're on your way to building a retail application network!  
+Anypoint Store is part of MuleSoft's Catalyst Accelerator for Retail offering. 
+Learn how to deliver a consistent and compelling customer experience across multiple channels with a set of API designs and supporting reference implementations. 
+
+
+
+Thanks,
+MuleSoft Team"
+	
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Log before mail sending" doc:id="395aac0e-1eb7-4d32-a93f-f44600407f93" message="Mail Payload=#[payload]" />
+			<retail-notifications-system-api:create-notification doc:name="Send email via POST" doc:id="fc3cbaba-5485-481e-934a-760f046acde0" config-ref="Retail_Notifications_System_API_Config" />
+			<logger level="INFO" doc:name="email sent" doc:id="21c27092-fc3b-46a2-a7bf-034ccf699686" message="email sent, payload=#[payload]" />
+		</async>
+		<ee:transform doc:name="Transform Message" doc:id="8d30e4eb-cb13-44b6-ab18-15a5a2e583b2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	customerId: payload.customerId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 </mule>
