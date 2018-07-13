@@ -60,7 +60,7 @@ MuleSoft Team"
 			</ee:transform>
 			<retail-notifications-system-api:create-notification doc:name="Send email via Notifications System API" doc:id="fc3cbaba-5485-481e-934a-760f046acde0" config-ref="Retail_Notifications_System_API_Config" />
 		</async>
-		<ee:transform doc:name="Data received from Customer System API to response" doc:id="8d30e4eb-cb13-44b6-ab18-15a5a2e583b2" >
+		<ee:transform doc:name="Prepare response with data from Customer System API" doc:id="8d30e4eb-cb13-44b6-ab18-15a5a2e583b2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
