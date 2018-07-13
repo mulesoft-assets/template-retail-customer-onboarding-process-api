@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api http:/
 http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.mulesoft.org/schema/mule/retail-notifications-system-api/current/mule-retail-notifications-system-api.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
     <http:listener-config name="retail-onboarding-process-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" protocol="HTTPS" tlsContext="TLS_Context"/>
+        <http:listener-connection host="0.0.0.0" port="${https.port}" protocol="HTTPS" tlsContext="TLS_Context"/>
     </http:listener-config>
     <apikit:config name="retail-onboarding-process-api-config" raml="retail-onboarding-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 	<configuration-properties doc:name="Configuration properties" doc:id="7305b8b1-e587-4752-acb3-1297d0d1587d" file="common.properties" />
