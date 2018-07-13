@@ -92,15 +92,15 @@ In order to use this Mule Anypoint Template you need to configure properties (AP
 + key.alias `1`
 
 ### API calls configuration
-customers-system-api.host=customer-system-api.cloudhub.io
-customers-system-api.port=80
-customers-system-api.basePath=/api
-customers-system-api.protocol=HTTP
++ customers-system-api.host `customer-system-api.cloudhub.io`
++ customers-system-api.port `80`
++ customers-system-api.basePath `/api`
++ customers-system-api.protocol `HTTP`
 
-notifications-system-api.host=dev-retail-notifications-system-api.cloudhub.io
-notifications-system-api.port=80
-notifications-system-api.basePath=/api
-notifications-system-api.protocol=HTTP
++ notifications-system-api.host `=dev-retail-notifications-system-api.cloudhub.io`
++ notifications-system-api.port `80`
++ notifications-system-api.basePath `/api`
++ notifications-system-api.protocol `HTTP`
 
 ### Path to cretail portal shown in email sent to new customer
 + catalyst.url `http:\\path-to-retail-portal.com`
