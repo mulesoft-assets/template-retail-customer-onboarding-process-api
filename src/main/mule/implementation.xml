@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:retail-notifications-system-api="http://www.mulesoft.org/schema/mule/retail-notifications-system-api" xmlns:retail-salesforce-customer-system-api="http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api/current/mule-retail-salesforce-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.mulesoft.org/schema/mule/retail-notifications-system-api/current/mule-retail-notifications-system-api.xsd">
+	<flow name="postCustomersFlow" doc:id="2d6abf90-7ce9-435a-8dec-9c1447cddf1e" >
+		<ee:transform doc:name="Store paylod to myInput variable" doc:id="111d2dc7-9543-4ef0-8ff0-6145bd0f87ba" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="myInput" ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Prepare data for adding new customer" doc:id="0605ef04-3d6e-4401-8605-0d63295e4916" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	customerId: vars.myInput.userId,
+	email: vars.myInput.email,
+	firstName: vars.myInput.firstName,
+	lastName: vars.myInput.lastName,
+	(phone: vars.myInput.phone) if vars.myInput.phone != null
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<retail-salesforce-customer-system-api:create-customer doc:name="Create new customer via Customer System API" doc:id="639aab46-c63b-4b7a-8920-70e61ab53b0f" config-ref="Retail_Salesforce_Customer_System_API_Config"/>
+		<async doc:name="Async mail sending" doc:id="acfb0734-8cd3-4e30-bb7a-7bca663f1b4b">
+			<ee:transform doc:name="Prepare email content" doc:id="e03fcf2b-45f5-4b65-81be-f2bc13877e62">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"type": "EMAIL",
+	priority: "MINOR",
+	recipient: vars.myInput.email,
+	subject: "Welcome to Anypoint Store",
+	message: "Hello $(vars.myInput.firstName),
+
+Thanks for creating an Anypoint Store account - you're on your way to building a retail application network!  
+Anypoint Store is part of MuleSoft's Catalyst Accelerator for Retail offering. 
+Learn how to deliver a consistent and compelling customer experience across multiple channels with a set of API designs and supporting reference implementations. 
+
+Check out more details here:  " ++ p("catalyst.url") ++ "
+
+Thanks,
+MuleSoft Team"
+	
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<retail-notifications-system-api:create-notification doc:name="Send email via Notifications System API" doc:id="fc3cbaba-5485-481e-934a-760f046acde0" config-ref="Retail_Notifications_System_API_Config" />
+		</async>
+		<ee:transform doc:name="Prepare response with data from Customer System API" doc:id="8d30e4eb-cb13-44b6-ab18-15a5a2e583b2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	customerId: payload.customerId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

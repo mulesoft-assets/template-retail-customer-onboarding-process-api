@@ -1,0 +1,31 @@
+{
+  "configs": [
+    "implementation.xml",
+    "global.xml",
+    "process-api.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "template-retail-customer-onboarding-process-api",
+  "minMuleVersion": "4.1.1",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "api\\.gitignore",
+        "api\\examples\\post_customer_request.raml",
+        "api\\examples\\post_customer_response.raml",
+        "api\\exchange_modules\\47f07e0a-f578-47d4-9591-d9e7afffb0fc.retail\\retail_common\\1.0.8\\retail_common.raml",
+        "api\\exchange_modules\\47f07e0a-f578-47d4-9591-d9e7afffb0fc.retail\\retail_customer_types\\1.0.4\\retail_customer_types.raml",
+        "api\\exchange_modules\\47f07e0a-f578-47d4-9591-d9e7afffb0fc.retail\\retail_payment\\1.0.1\\retail_payment.raml",
+        "api\\retail-onboarding-process-api.raml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
