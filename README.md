@@ -102,5 +102,5 @@ In order to use this Mule Anypoint Template you need to configure properties (AP
 + notifications-system-api.basePath `/api`
 + notifications-system-api.protocol `HTTP`
 
-### Path to cretail portal shown in email sent to new customer
+### Path to retail portal shown in email sent to new customer
 + catalyst.url `http:\\path-to-retail-portal.com`
