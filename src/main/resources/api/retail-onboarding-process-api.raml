@@ -5,10 +5,10 @@ mediaType: application/json
 baseUri: https://localhost:8082/api
 
 uses:
-  customer: /exchange_modules/org.mule.templates/retail-customer-types/1.0.0/retail_customer_types.raml
+  customer: exchange_modules/47f07e0a-f578-47d4-9591-d9e7afffb0fc.retail/retail_customer_types/1.0.9/retail_customer_types.raml
 
 types: 
-  customer:
+  Customer:
     type: customer.Customer
     properties:
       userId?: 
@@ -39,9 +39,9 @@ types:
     description: Create customer contact  
     body:
       application/json:
-        type: customer
-        example: !include examples/post_customer_request.raml
+        type: Customer
+        example: !include examples/post_customer_request.json
     responses:
       201:
         body:
-          example: !include examples/post_customer_response.raml
+          example: !include examples/post_customer_response.json

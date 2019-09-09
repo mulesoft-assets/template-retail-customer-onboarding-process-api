@@ -5,7 +5,7 @@ usage: |
 
 types:
 
-  maskedAccountNumber:
+  MaskedAccountNumber:
     type: string
     description: |
       the last four digits of an account number
@@ -33,10 +33,10 @@ types:
     description: |
       payment method type
     properties:
-      medium?: PaymentMediumType?
-      issuer?: PaymentIssuerType?
+      medium?: PaymentMediumType | nil
+      issuer?: PaymentIssuerType | nil
       name?:
-        type: string?
+        type: string | nil
     examples:
       cash:
         medium: PHYSICAL
@@ -86,3 +86,18 @@ types:
             type: integer
             minimum: 2017
             maximum: 2025
+    
+  PaymentResponse:
+    type: object
+    properties: 
+      identifier: string
+      status: string
+      links?: PayPalLink[]
+      paymentMethod?: PaymentMethodType
+
+  PayPalLink: 
+    type: object
+    properties: 
+      href: string
+      rel: string
+      method: string
