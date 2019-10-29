@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:retail-notifications-system-api="http://www.mulesoft.org/schema/mule/retail-notifications-system-api" xmlns:retail-salesforce-customer-system-api="http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api"
+<mule xmlns:retail-notifications-system-api="http://www.mulesoft.org/schema/mule/retail-notifications-system-api" xmlns:retail-customer-system-api="http://www.mulesoft.org/schema/mule/retail-customer-system-api"
 	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api http://www.mulesoft.org/schema/mule/retail-salesforce-customer-system-api/current/mule-retail-salesforce-customer-system-api.xsd
+http://www.mulesoft.org/schema/mule/retail-customer-system-api http://www.mulesoft.org/schema/mule/retail-customer-system-api/current/mule-retail-customer-system-api.xsd
 http://www.mulesoft.org/schema/mule/retail-notifications-system-api http://www.mulesoft.org/schema/mule/retail-notifications-system-api/current/mule-retail-notifications-system-api.xsd">
 	<flow name="postCustomersFlow" doc:id="2d6abf90-7ce9-435a-8dec-9c1447cddf1e" >
 		<ee:transform doc:name="Store paylod to myInput variable" doc:id="111d2dc7-9543-4ef0-8ff0-6145bd0f87ba" >
@@ -32,7 +32,7 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<retail-salesforce-customer-system-api:create-customer-contact doc:name="Create new customer via Customer System API" doc:id="0c68a920-476a-41a8-bf25-cf96dee975c1" config-ref="Retail_Salesforce_Customer_System_API_Config"/>
+		<retail-customer-system-api:create-customer doc:name="Create new customer via Customer System API" doc:id="0c68a920-476a-41a8-bf25-cf96dee975c1" config-ref="Retail_Salesforce_Customer_System_API_Config"/>
 		<async doc:name="Async mail sending" doc:id="acfb0734-8cd3-4e30-bb7a-7bca663f1b4b">
 			<ee:transform doc:name="Prepare email content" doc:id="e03fcf2b-45f5-4b65-81be-f2bc13877e62">
 				<ee:message>
